@@ -4,6 +4,7 @@ import { createAuth } from '@keystone-next/auth';
 import { withItemData, statelessSessions } from '@keystone-next/keystone/session';
 import { User } from './schemas/User';
 import { Product } from './schemas/Product';
+import { ProductImage } from './schemas/ProductImage';
 const databaseURL = process.env.DATABASE_URL || 'mongodb://localhost/keystone-stickfits-tutorial';
 
 const sessionConfig = {
@@ -34,7 +35,8 @@ export default withAuth(config({
   lists: createSchema({
     // schema items go in here
     User,
-    Product
+    Product,
+    ProductImage
   }),
   ui: {
     isAccessAllowed: ({ session }) => {
