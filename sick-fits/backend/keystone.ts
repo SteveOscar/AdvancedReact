@@ -1,6 +1,9 @@
 import 'dotenv/config';
 import { config, createSchema } from '@keystone-next/keystone/schema';
-
+import { createAuth } from '@keystone-next/auth';
+import { withItemData, statelessSessions } from '@keystone-next/keystone/session';
+import { User } from './schemas/User';
+import { Product } from './schemas/Product';
 const databaseURL = process.env.DATABASE_URL || 'mongodb://localhost/keystone-stickfits-tutorial';
 
 const sessionConfig = {
@@ -8,8 +11,16 @@ const sessionConfig = {
   secret: process.env.COOKIE_SECRET
 }
 
+const { withAuth } = createAuth({
+  listKey: 'User',
+  identityField: 'email',
+  secretField: 'password',
+  initFirstItem: {
+    fields: ['name', 'email', 'password']
+  }
+})
 
-export default config({
+export default withAuth(config({
   server: {
     cors: {
       origin: [process.env.FRONTEND_URL],
@@ -22,9 +33,15 @@ export default config({
   },
   lists: createSchema({
     // schema items go in here
+    User,
+    Product
   }),
   ui: {
-    isAccessAllowed: () => true
+    isAccessAllowed: ({ session }) => {
+      return !!session?.data;
+    }
   },
-  // TODO: add session values
-})
+  session: withItemData(statelessSessions(sessionConfig), {
+    User: 'id'
+  })
+}))
