@@ -2,7 +2,6 @@ import { useMutation } from '@apollo/client';
 import gql from 'graphql-tag';
 import Router from 'next/router';
 import useForm from '../lib/useForm';
-import DisplayError from './ErrorMessage';
 import { ALL_PRODUCTS_QUERY } from './Products';
 import Form from './styles/Form';
 
@@ -58,7 +57,6 @@ export default function CreateProduct() {
         });
       }}
     >
-      <DisplayError error={error} />
       <fieldset disabled={loading} aria-busy={loading}>
         <label htmlFor="image">
           Image
